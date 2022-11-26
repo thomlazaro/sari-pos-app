@@ -1,0 +1,10 @@
+section button{
+    gap: 10px;
+}
+.update-modal{
+    position: absolute;
+}
+
+.card-img{
+    height: 160px;
+}
