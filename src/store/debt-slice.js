@@ -20,8 +20,8 @@ const debtSlice = createSlice({
        
         },
         replacePageDebts(state,action){
-            const limitStart = (Math.ceil(action.payload.currentPage-1))*10
-            const pageArray = state.debts.slice(limitStart,limitStart+10)
+            const limitStart = (Math.ceil(action.payload.currentPage-1))*12
+            const pageArray = state.debts.slice(limitStart,limitStart+12)
             //console.log(action.payload)
             state.debtPage = pageArray;
             state.currentPage = action.payload.currentPage;
