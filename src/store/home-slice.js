@@ -4,6 +4,9 @@ const initialHomeState = {
     today_total_profit:0,
     today_total_selling_price:0,
     today_total_price:0,
+    overall_total_profit:0,
+    overall_total_selling_price:0,
+    overall_total_price:0,
     total_profit:0,
     total_selling_price:0,
     total_price:0,
@@ -47,6 +50,10 @@ const homeSlice = createSlice({
             state.today_total_profit=state.today_total_profit+(action.payload.total_selling_price-action.payload.total_price);
             state.today_total_selling_price=state.today_total_selling_price+action.payload.total_selling_price;
             state.today_total_price=state.today_total_price+action.payload.total_price;
+            //add overall values
+            state.overall_total_profit=state.overall_total_profit+(action.payload.total_selling_price-action.payload.total_price);
+            state.overall_total_selling_price=state.overall_total_selling_price+action.payload.total_selling_price;
+            state.overall_total_price=state.overall_total_price+action.payload.total_price;
         },
         addTotalDebt(state,action){
             state.total_debt_profit = state.total_debt_profit+(action.payload.total_selling_price-action.payload.total_price);
@@ -66,6 +73,10 @@ const homeSlice = createSlice({
                 state.today_total_selling_price=state.today_total_selling_price-action.payload.total_selling_price;
                 state.today_total_price=state.today_total_price-action.payload.total_price;
             }
+
+            state.overall_total_profit=state.overall_total_profit-(action.payload.total_selling_price-action.payload.total_price);
+            state.overall_total_selling_price=state.overall_total_selling_price-action.payload.total_selling_price;
+            state.overall_total_price=state.overall_total_price-action.payload.total_price;
         },
         replaceHome(state,action){
             //console.log(action.payload)

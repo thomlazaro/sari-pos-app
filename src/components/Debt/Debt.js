@@ -96,14 +96,11 @@ const Debt = ()=> {
             ...paidObject
         }));
 
-        //update today home state if debt sale_date is today
-        const dateToday = new Date().toLocaleDateString();
-        if(dateToday===paidObject.sale_date){
-            dispatch(homeActions.addTodayTotalSales({
-                ...paidObject
-            }));
-        }
-
+        //update today & overall home state
+        dispatch(homeActions.addTodayTotalSales({
+            ...paidObject
+        }));
+        
         //remove paid debt from debt state
         dispatch(debtActions.removeDebt(
             { id:paidObject.id }

@@ -27,6 +27,23 @@ const Home = ()=> {
         />
 
         <HomeCard 
+        title="Total Profit Earned"
+        subtitle="Total amount of profit earned for all sale made"
+        text={"P"+homeState.overall_total_profit}
+        />
+
+        <HomeCard 
+        title="Total Sale Made"
+        subtitle="Total amount of all items for all sale made"
+        text={"P"+homeState.overall_total_selling_price}
+        />
+        <HomeCard 
+        title="Total Item Cost Used"
+        subtitle="Total amount of all items by its base price"
+        text={"P"+homeState.overall_total_price}
+        />
+
+        <HomeCard 
         title="Total Possible Profit"
         subtitle="Total amount of profit earned once all items is sold"
         text={"P"+homeState.total_profit}
@@ -39,7 +56,7 @@ const Home = ()=> {
         />
         <HomeCard 
         title="Total Item Cost"
-        subtitle="Total amount of all items by its base price"
+        subtitle="Total amount of all items that are not yet sold by its base price"
         text={"P"+homeState.total_price}
         />
         <HomeCard 
