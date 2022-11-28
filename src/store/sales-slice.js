@@ -18,8 +18,8 @@ const salesSlice = createSlice({
        
         },
         replacePageSales(state,action){
-            const limitStart = (Math.ceil(action.payload.currentPage-1))*10
-            const pageArray = state.sales.slice(limitStart,limitStart+10)
+            const limitStart = (Math.ceil(action.payload.currentPage-1))*12
+            const pageArray = state.sales.slice(limitStart,limitStart+12)
             //console.log(action.payload)
             state.salePage = pageArray;
             state.currentPage = action.payload.currentPage;

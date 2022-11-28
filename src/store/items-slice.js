@@ -49,8 +49,8 @@ const itemsSlice = createSlice({
         },     
         //update items state from back-end on initial load
         replacePageItems(state,action){
-            const limitStart = (Math.ceil(action.payload.currentPage-1))*10
-            const pageArray = state.items.slice(limitStart,limitStart+10)
+            const limitStart = (Math.ceil(action.payload.currentPage-1))*12
+            const pageArray = state.items.slice(limitStart,limitStart+12)
             //console.log(action.payload)
             state.pageItems = pageArray;
             state.currentPage = action.payload.currentPage;
