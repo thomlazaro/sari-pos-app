@@ -105,6 +105,7 @@ const AddToCartForm = (props)=>{
 
         //reset form state and close modal
         setCount(1);
+        props.clearSearchItemHandler();
         props.handleClose();
         //console.log(event);
     }

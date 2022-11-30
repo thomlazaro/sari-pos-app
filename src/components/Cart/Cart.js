@@ -13,6 +13,8 @@ const Cart = ()=> {
 
     //set Items Element
     const itemsList = useSelector(state=>state.items.pageItems);
+    //get all items from item slice
+    const allItemList = useSelector(state=>state.items.items);
     //get total page count
     const pageCount = useSelector(state=>state.items.pages);
     //get current page
@@ -20,7 +22,7 @@ const Cart = ()=> {
     //set cart Element
     const cartTotal = useSelector(state=>state.cart.total_item_count);
     //set State for filtered Items
-    const [filteredItems,setFilteredItems] = useState(itemsList);
+    const [filteredItems,setFilteredItems] = useState(allItemList);
     const [searchItem,setSearchItem] = useState('');
 
     //set Modal state for Sales notif
@@ -44,8 +46,13 @@ const Cart = ()=> {
         setShowSaleComplete(false);
     };
     const handleShowSaleComplete = () => {
+        setSearchItem('');
         setShowSaleComplete(true);
     };
+
+    const clearSearchItemHandler = ()=>{
+        setSearchItem('');
+    }
 
 
     //set use effect for itemsList to make sure we are getting the lastest filtered items
@@ -61,6 +68,7 @@ const Cart = ()=> {
             <CartList 
                 key={item.id} 
                 item={item} 
+                clearSearchItemHandler={clearSearchItemHandler}
             />
         );
     });
@@ -68,8 +76,15 @@ const Cart = ()=> {
     //item filter change handler
     const filterChangeHandler =(event)=>{
         const newSearch = event.target.value;
+        let newItems;
         setSearchItem(newSearch);
-        const newItems = itemsList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        if(newSearch.trim()===''){
+            newItems = itemsList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        }
+        else{
+            newItems = allItemList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        }
+        
         setFilteredItems(newItems);
         //console.log(newItems);
 
@@ -83,17 +98,27 @@ const Cart = ()=> {
                     <i>Cart Items -</i> <b>{cartTotal}</b>
             </Button>
         </section>
-        <section className="page">
-            <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
-        </section>
+        {searchItem===''&&
+            <section className="page">
+                <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
+            </section>
+        }
         <section className="items">
             {itemsElement}
         </section>
-        <section className="page">
-            <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
-        </section>
+        {searchItem===''&&
+            <section className="page">
+                <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
+            </section>
+        }
         <section>
-            <CartModal show={show} handleClose={handleClose} itemList={itemsList} handleShowSaleComplete={handleShowSaleComplete}/>
+            <CartModal 
+                show={show} 
+                handleClose={handleClose} 
+                itemList={itemsList} 
+                handleShowSaleComplete={handleShowSaleComplete}
+                clearSearchItemHandler={clearSearchItemHandler}
+            />
             <CartSaleComplete show={showSaleComplete} handleClose={handleCloseSaleComplete}/>
         </section>          
     </Fragment>  

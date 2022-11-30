@@ -39,7 +39,12 @@ const CartList = (props)=>{
         </Card.Body>
         </Card>
         <div className="update-modal">
-            <AddToCartForm show={show} handleClose={handleClose} item={props.item}/>
+            <AddToCartForm 
+                show={show} 
+                handleClose={handleClose} 
+                item={props.item}
+                clearSearchItemHandler={props.clearSearchItemHandler}
+                />
         </div>
     </Fragment>
     )

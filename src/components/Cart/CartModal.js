@@ -115,6 +115,8 @@ const CartModal = (props)=>{
         setDebt(false);
         setDebtorsName('');
 
+        props.clearSearchItemHandler();
+
         //close cart modal
         props.handleClose();
         //show modal notification
@@ -138,7 +140,9 @@ const CartModal = (props)=>{
 
         dispatch(itemsActions.replacePageItems({
             currentPage:currentPage
-        }))
+        }));
+
+        props.clearSearchItemHandler();
     }
 
     const removeOneItemHandler = (id)=>{
@@ -160,7 +164,9 @@ const CartModal = (props)=>{
 
         dispatch(itemsActions.replacePageItems({
             currentPage:currentPage
-        }))
+        }));
+
+        props.clearSearchItemHandler();
     }
 
     const removeAllItemHandler =(id,buy_count)=>{
@@ -180,7 +186,9 @@ const CartModal = (props)=>{
 
         dispatch(itemsActions.replacePageItems({
             currentPage:currentPage
-        }))
+        }));
+
+        props.clearSearchItemHandler();
 
     }
 
