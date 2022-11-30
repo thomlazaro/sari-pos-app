@@ -1,4 +1,3 @@
-import Dropdown from 'react-bootstrap/Dropdown';
 import { Fragment,useState,useEffect } from "react";
 import { useSelector } from "react-redux";
 //import { itemsActions } from '../../store/items-slice';
@@ -80,17 +79,6 @@ const Cart = ()=> {
         <Fragment>
         <section className="sort">
             <input type='text' maxLength='50' onChange={filterChangeHandler} value={searchItem}/>
-            <Dropdown>
-                <Dropdown.Toggle variant="success" id="dropdown-basic">
-                    Sort
-                </Dropdown.Toggle>
-                <Dropdown.Menu>
-                    <Dropdown.Item>Alphabetically</Dropdown.Item>
-                    <Dropdown.Item>Date Added</Dropdown.Item>
-                    <Dropdown.Item>Price</Dropdown.Item>
-                    <Dropdown.Item>Selling Price</Dropdown.Item>                    
-                </Dropdown.Menu>
-            </Dropdown>
             <Button variant="primary" onClick={handleShow}>
                     <i>Cart Items -</i> <b>{cartTotal}</b>
             </Button>

@@ -132,6 +132,7 @@ const ItemForm = (props)=>{
         setCount(1);
         setSellingPrice(1);
         setPrice(1);
+        props.clearSearchItemHandler();
         props.handleClose(`Add Item Notification`,`${newItem.name} added!`);
         //console.log(event);
     }

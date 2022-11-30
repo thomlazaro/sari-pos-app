@@ -79,7 +79,12 @@ const ItemList = (props)=>{
         </Card.Body>
         </Card>
         <div className="update-modal">
-            <ItemUpdateForm show={show} handleClose={handleClose} item={props.item}/>
+            <ItemUpdateForm 
+                show={show} 
+                handleClose={handleClose} 
+                item={props.item}
+                clearSearchItemHandler={props.clearSearchItemHandler}
+            />
             <ItemDeleteModal 
                 show={showDelete} 
                 handleClose={handleCloseDelete} 

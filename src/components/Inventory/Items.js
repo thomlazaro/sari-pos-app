@@ -1,6 +1,5 @@
 import ItemList from "./ItemList";
 import './Items.css';
-import Dropdown from 'react-bootstrap/Dropdown';
 import { Fragment,useState,useEffect } from "react";
 import { useSelector } from "react-redux";
 import Button from 'react-bootstrap/Button';
@@ -16,13 +15,15 @@ const Items = ()=>{
     const dispatch = useDispatch();
     //set Items Element
     const itemsList = useSelector(state=>state.items.pageItems);
+    //get all items in items state
+    const allItemList = useSelector(state=>state.items.items);
     //get total page count
     const pageCount = useSelector(state=>state.items.pages);
     //get current page
     const currentPage = useSelector(state=>state.items.currentPage);
     //console.log(formatPageArray(10));
     //set State for filtered Items
-    const [filteredItems,setFilteredItems] = useState(itemsList);
+    const [filteredItems,setFilteredItems] = useState(allItemList);
     const [searchItem,setSearchItem] = useState('');
 
     //set Modal state for Inventory notif
@@ -43,13 +44,17 @@ const Items = ()=>{
         setShow(true);
     };
 
+    const clearSearchItemHandler = ()=>{
+        setSearchItem('');
+    }
+
     //delete item handler function
     const deleteItemHandler = async(id,name)=>{
         //delete item from backend using id
         const token = localStorage.getItem('token');
         const responseObj = await deleteItem({id:id},token);
         //update home state total possible displays
-        const itemToDelete = itemsList.find(item=>item.id===id);
+        const itemToDelete = allItemList.find(item=>item.id===id);
         const profit = 
             (itemToDelete.count*itemToDelete.selling_price)-(itemToDelete.count*itemToDelete.price);
         const updateObject = {
@@ -78,7 +83,7 @@ const Items = ()=>{
         }));
 
         //clear search filter state
-        setSearchItem('');
+        clearSearchItemHandler();
         //filterChangeHandler();
         //console.log(newItems);
         handleShowModal(`Delete Notification`,`${name} Deleted!`);
@@ -102,6 +107,7 @@ const Items = ()=>{
                 openModal={handleShowModal}
                 showModal={showModal}
                 searchItem={searchItem}
+                clearSearchItemHandler={clearSearchItemHandler}
             />
         );
     });
@@ -110,7 +116,7 @@ const Items = ()=>{
     const filterChangeHandler =(event)=>{
         const newSearch = event.target.value;
         setSearchItem(newSearch);
-        const newItems = itemsList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        const newItems = allItemList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
         setFilteredItems(newItems);
         //console.log(newItems);
 
@@ -120,34 +126,28 @@ const Items = ()=>{
         <Fragment>
             <section className="sort">
                 <input type='text' maxLength='50' onChange={filterChangeHandler} value={searchItem}/>
-                <Dropdown>
-                    <Dropdown.Toggle variant="success" id="dropdown-basic">
-                        Sort
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu>
-                        <Dropdown.Item>Alphabetically</Dropdown.Item>
-                        <Dropdown.Item>Date Added</Dropdown.Item>
-                        <Dropdown.Item>Price</Dropdown.Item>
-                        <Dropdown.Item>Selling Price</Dropdown.Item>                    
-                    </Dropdown.Menu>
-                </Dropdown>
                 <Button variant="primary" onClick={handleShow}>
                     Add New Item
                 </Button>
             </section>
-            <section className="page">
-                <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
-            </section>
+            {searchItem===''&&
+                <section className="page">
+                    <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
+                </section>
+            }     
             <section className="items">
                 {itemsElement}
             </section>
-            <section className="page">
-                <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items"/>
-            </section>
+            {searchItem===''&&
+                <section className="page">
+                    <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Items" />
+                </section>
+            }  
             <section>
                 <ItemForm 
                     show={show} 
                     handleClose={handleClose} 
+                    clearSearchItemHandler={clearSearchItemHandler}
                     closeModal={handleCloseModal}
                     openModal={handleShowModal}
                 />

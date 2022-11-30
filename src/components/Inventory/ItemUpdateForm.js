@@ -95,7 +95,7 @@ const ItemUpdateForm = (props)=>{
         dispatch(itemsActions.replacePageItems({
             currentPage:currentPage
         }));
-
+        props.clearSearchItemHandler();
         //reset form state and close modal
         //console.log(newItem);
         props.handleClose(`Update Item Notification`,`${newItem.name} updated!`);
