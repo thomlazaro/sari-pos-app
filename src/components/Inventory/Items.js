@@ -115,8 +115,14 @@ const Items = ()=>{
     //item filter change handler
     const filterChangeHandler =(event)=>{
         const newSearch = event.target.value;
+        let newItems;
         setSearchItem(newSearch);
-        const newItems = allItemList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        if(newSearch.trim()===''){
+            newItems = itemsList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        }
+        else{
+            newItems = allItemList.filter(item=>item.name.toLowerCase().includes(newSearch.toLowerCase()));
+        }   
         setFilteredItems(newItems);
         //console.log(newItems);
 
