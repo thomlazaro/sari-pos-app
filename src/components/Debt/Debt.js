@@ -1,5 +1,5 @@
 import './Debt.css'
-import { Fragment, useState } from 'react';
+import { Fragment, useState, useCallback,useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import DebtList from './DebtList';
 import { debtActions } from '../../store/debt-slice';
@@ -8,15 +8,19 @@ import { homeActions } from '../../store/home-slice';
 import { deleteSales,paidDebt } from '../../lib/sari-api';
 import DebtDeleteNotif from './DebtDeleteNotif';
 import PageUI from '../UI/PageUI';
+import { getYears } from '../Sales/Sales';
+import { Button } from 'react-bootstrap';
 //import { paidDebt } from '../../lib/dummy-api'
 
 const Debt = ()=> {
     const dispatch = useDispatch();
     const debtList = useSelector(state=>state.debt.debtPage);
+    const allDebtList = useSelector(state=>state.debt.debts);
     const currentPage = useSelector(state=>state.debt.currentPage);
     const pageCount = useSelector(state=>state.debt.debtsPageCount);
 
-    const [filterDebt,setFilterDebt] = useState({month:'Jan',year:'2022'});
+    const [filterDebt,setFilterDebt] = useState({month:'',year:''});
+    const [filterDebtList, setFilterDebtList] = useState(debtList);
 
     //set Delete Notification modal state
     const [debtDetails,setDebtDetails] = useState({name:"",amount:0});
@@ -129,10 +133,44 @@ const Debt = ()=> {
 
         handleShow("Paid Debt Notification",
         `Debt of ${paidObject.debtors_name} with amount of P${paidObject.total_selling_price} is now marked as paid!`);//show delete sale notification
+    };
+
+    //check date filter and return filtered debt data as new debtList element
+    const dateFilterCheck = useCallback(()=>{
+        
+        if(filterDebt.month!==""){
+            if(filterDebt.year!==""){
+                const filteredDebtList = allDebtList.filter(debt=>{             
+                    return (debt.sale_date.substring(0,debt.sale_date.indexOf('/'))===filterDebt.month&&
+                    debt.sale_date.substring(debt.sale_date.lastIndexOf('/')+1)===filterDebt.year)                      
+                });
+                setFilterDebtList(filteredDebtList);
+            }
+        }
+        else{
+            setFilterDebtList(debtList);
+        }
+        
+    },[filterDebt,allDebtList,debtList]); 
+
+
+    //check proper date filter and update content if there is one
+    useEffect(()=>{dateFilterCheck()},[dateFilterCheck]);
+
+    const debtDateList = getYears(allDebtList);
+
+    const yearOptionElement = debtDateList.map(debtYear=>{
+        return(
+            <option key={debtYear} value={debtYear}>{debtYear}</option>
+        )
+    });
+
+    const clearFilterHandler = ()=>{
+        setFilterDebt({month:'',year:''});
     }
 
     //generate salesList element
-    const debtListElement = debtList.map(debt=>{
+    const debtListElement = filterDebtList.map(debt=>{
         return(
             <DebtList 
                 key={debt.id} 
@@ -146,40 +184,48 @@ const Debt = ()=> {
     return(
         <Fragment>
             <section className="sort">
-                <label>{filterDebt.month} {filterDebt.year}</label>
                 <select 
                     value={filterDebt.month} 
                     onChange={monthChangeHandler}
                     className="form-select-sm" 
                 >
-                    <option>Jan</option>
-                    <option>Feb</option>
-                    <option>Mar</option>
-                    <option>Apr</option>
-                    <option>May</option>
-                    <option>Jun</option>
-                    <option>Jul</option>
-                    <option>Aug</option>
-                    <option>Sep</option>
-                    <option>Oct</option>
-                    <option>Nov</option>
-                    <option>Dec</option>
+                    <option value="">Month</option>
+                    <option value="1">Jan</option>
+                    <option value="2">Feb</option>
+                    <option value="3">Mar</option>
+                    <option value="4">Apr</option>
+                    <option value="5">May</option>
+                    <option value="6">Jun</option>
+                    <option value="7">Jul</option>
+                    <option value="8">Aug</option>
+                    <option value="9">Sep</option>
+                    <option value="10">Oct</option>
+                    <option value="11">Nov</option>
+                    <option value="12">Dec</option>
                 </select>
                 <select 
                     value={filterDebt.year} 
                     onChange={yearChangeHandler}
                     className="form-select-sm" 
                 >
-                    <option>2022</option>
-                    <option>2021</option>
+                    <option value="">Year</option>
+                    {yearOptionElement}
                 </select>
+                <Button variant="success" onClick={clearFilterHandler}>Clear</Button>
             </section>
-            <section className='page'>
-                <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Debts"/>
-            </section>
+            {filterDebt.month===""&&filterDebt.year===""&&
+                 <section className='page'>
+                     <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Debts"/>
+                </section>
+            }          
             <section className='items'>
                 {debtListElement}
             </section>
+            {filterDebt.month===""&&filterDebt.year===""&&
+                 <section className='page'>
+                     <PageUI currentPage={currentPage} pageCount={pageCount} actionFor="Debts"/>
+                </section>
+            }    
             <section>
                 <DebtDeleteNotif 
                     show={show} 
