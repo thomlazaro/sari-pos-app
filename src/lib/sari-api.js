@@ -1,13 +1,9 @@
 const SARI_DOMAIN = 'http://192.168.100.4:8080';
 
 //get all items for items table
-export async function getAllItems(token) {
+export async function getAllItems() {
   
-    const response = await fetch(`${SARI_DOMAIN}/items?page=1`,{//token auth
-      headers:{
-        Authorization: 'Bearer '+token
-      }
-    });
+    const response = await fetch(`${SARI_DOMAIN}/items?page=1`);
     const data = await response.json();
   
     if (!response.ok) {
@@ -76,14 +72,27 @@ export async function getAllItems(token) {
   }
 //add sale on sale table - this is called when you checkout the cart
   export async function addSale(itemData,token) {
-    const response = await fetch(`${SARI_DOMAIN}/sales`, {
-      method: 'POST',
-      body: JSON.stringify(itemData),
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer '+token
-      },
-    });
+    let response;
+    if(token){
+      response = await fetch(`${SARI_DOMAIN}/sales`, {
+        method: 'POST',
+        body: JSON.stringify(itemData),
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer '+token
+        },
+      });
+    }
+    else{
+      response = await fetch(`${SARI_DOMAIN}/sales/order`, {
+        method: 'POST',
+        body: JSON.stringify(itemData),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+      });
+    }
+   
     const data = await response.json();
   
     if (!response.ok) {
@@ -106,14 +115,24 @@ export async function getAllItems(token) {
       throw new Error(data.message || 'Could not fetch sales.');
     }
     const allSales = data.sales;
-    const transformedItems = {sales:[],debt:[],salesPageCount:data.sale_page_count,debtsPageCount:data.debt_page_count};
+    const transformedItems = 
+      {sales:[],
+        debt:[],
+        order:[],
+        salesPageCount:data.sale_page_count,
+        debtsPageCount:data.debt_page_count,
+        ordersPageCount:data.order_page_count
+      };
     //add key from firebase to id property for each object
     allSales.forEach(sale=>{
-      if(sale.debt){
+      if(sale.debt&&!sale.order_ind){
         transformedItems.debt.push(sale);
       }
-      else{
+      else if(!sale.debt&&!sale.order_ind){
         transformedItems.sales.push(sale);
+      }
+      else{
+        transformedItems.order.push(sale);
       }
     });
 

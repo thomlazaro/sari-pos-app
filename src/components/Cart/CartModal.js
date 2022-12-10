@@ -34,9 +34,23 @@ const CartModal = (props)=>{
     const [debt,setDebt] = useState(false);
     const [debtorsName,setDebtorsName] = useState('');
 
+
+    //gcash ref num
+    const [refNum,setRefNum] = useState('');
+    const [showRefNum,setShowRefNum] = useState(false);
+
+    const token = localStorage.getItem('token');
+
     //when form modal is submitted
     const submitFormHandler = async(event) =>{
         event.preventDefault();
+        const getToken = localStorage.getItem('token');
+        if(refNum.trim().length===0&&!debt&&!getToken){
+            //console.log('shit')
+            setShowRefNum(true);
+            return;
+        }
+
         //get date today
         const dateToday = new Date().toLocaleDateString();
         //format sale object
@@ -47,7 +61,8 @@ const CartModal = (props)=>{
             total_price:cartState.total_price,
             sale_date:dateToday,
             debt:debt,
-            debtors_name:debtorsName
+            debtors_name:debtorsName,
+            gcash_ref_num:refNum
         }
         //send to backend. add .then to get the id of the sale
         let salesData;
@@ -203,6 +218,17 @@ const CartModal = (props)=>{
         setDebtorsName(debtors_name);
     }
 
+    const changeRefNum = (event) => {
+        const newRefNum = event.target.value;
+        if(newRefNum.trim().length!==0){
+            setShowRefNum(false);
+        }
+        else{
+            setShowRefNum(true);
+        }
+        setRefNum(newRefNum);
+    }
+
     //cart item List
     const cartItemElement = cartState.items.map(item=>{
         return(
@@ -217,8 +243,6 @@ const CartModal = (props)=>{
         );
 
     });
-
-
 
    return(
         <Fragment>
@@ -237,6 +261,21 @@ const CartModal = (props)=>{
                     <Form.Group className="mb-3" controlId={`addItemForm.total_selling_price`}>
                         <Form.Label><i>Total Price: </i><b>P{cartState.total_selling_price.toString()}</b></Form.Label>
                     </Form.Group>
+                    {!token&& 
+                        <Form.Group className="mb-3" controlId="addItemForm.refNum">  
+                            <Form.Label><b>GCASH Reference Number </b></Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={refNum}
+                                onChange={changeRefNum}
+                            />
+                            {showRefNum&&
+                                <div>
+                                    <Form.Label className='cart-item-no-stock'><b>Please Include the GCASH Reference Number!</b></Form.Label>
+                                </div>
+                            }
+                        </Form.Group> 
+                    }
                     <Accordion>
                         <Accordion.Item eventKey="0">
                             <Accordion.Header>Option</Accordion.Header>

@@ -17,7 +17,7 @@ function Header() {
       //console.log(userState.token.trim().length);
       dispatch(userActions.removeToken());
       localStorage.removeItem('token');
-      history.replace('/');
+      history.replace('/login');
       return;
     }
     history.replace(navigate);

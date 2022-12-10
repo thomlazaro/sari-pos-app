@@ -17,6 +17,7 @@ import { salesActions } from './store/sales-slice';
 import { debtActions } from './store/debt-slice';
 import { userActions } from './store/user-slice';
 import { homeActions } from './store/home-slice';
+import { ordersActions } from './store/order-slice';
 import Debt from './components/Debt/Debt';
 
 function App() {
@@ -55,7 +56,7 @@ function App() {
         }
         
         if(initialToken){
-          if(location.pathname==='/'){
+          if(location.pathname==='/login'||location.pathname==='/order'){
             history.replace('/home');
           }
           else{
@@ -63,18 +64,20 @@ function App() {
           } 
         }
         else{
-          //redirect to login if there is no token
-          history.replace('/');
+          if(location.pathname==='/login'){
+            history.replace('/login');
+            return;
+          }
+          //redirect to order if there is no token
+          history.replace('/order');
         }
   },[dispatch,history,location.pathname])
 
   //get items from backend when app initially loads
   useEffect(()=>{
-    //only do http call if token exist
-    if(token){
       //getAllItems from sari-api and replace items on slice
       
-      getAllItems(token,1).then(data=>{
+      getAllItems().then(data=>{
         //console.log(data);
         dispatch(itemsActions.replaceItems(
           {
@@ -89,7 +92,8 @@ function App() {
         console.log(err);
         handleShow();
       });
-  
+
+      if(token){//only do http call if token exist
       //getAllSales from sari-api and replace sales and debt on slice
       
       getAllSales(token).then(sales=>{
@@ -105,6 +109,13 @@ function App() {
           
         ));
         dispatch(debtActions.replacePageDebts({
+          currentPage:1
+        }));
+
+        dispatch(ordersActions.replaceOrders(
+          {orders:[...sales.order],ordersPage:[],currentPage:1,orderPageCount:sales.ordersPageCount}
+        ));
+        dispatch(ordersActions.replacePageOrders({
           currentPage:1
         }));
       }
@@ -131,8 +142,11 @@ function App() {
     <Fragment>
       <Header />
       <Switch> 
-        <Route path='/' exact>
+        <Route path='/login' exact>
           <Login />
+        </Route>
+        <Route path='/order'>
+          <Cart />
         </Route>
         <Route path='/home'>
           <Home />
