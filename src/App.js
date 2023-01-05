@@ -56,8 +56,8 @@ function App() {
         }
         
         if(initialToken){
-          if(location.pathname==='/login'||location.pathname==='/order'){
-            history.replace('/home');
+          if(location.pathname==='/login'||location.pathname==='/order'||location.pathname==='/'){
+            history.replace('/inventory');
           }
           else{
             history.replace(location.pathname);
@@ -69,7 +69,7 @@ function App() {
             return;
           }
           //redirect to order if there is no token
-          history.replace('/order');
+          history.replace('/login');
         }
   },[dispatch,history,location.pathname])
 
@@ -145,9 +145,9 @@ function App() {
         <Route path='/login' exact>
           <Login />
         </Route>
-        <Route path='/order'>
+        {/* <Route path='/order'>
           <Cart />
-        </Route>
+        </Route> */}
         <Route path='/home'>
           <Home />
         </Route>

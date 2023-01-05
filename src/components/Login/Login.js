@@ -82,7 +82,7 @@ const Login = () =>{
                 }
                 );
     
-                history.replace('/home');//move to /home
+                history.replace('/inventory');//move to /inventory
             }
             else{
                 setMessage(result.data.message);
